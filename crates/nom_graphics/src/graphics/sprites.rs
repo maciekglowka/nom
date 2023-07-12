@@ -3,9 +3,10 @@ use rogalik::{
     storage::{Entity, World}
 };
 
+use nom_data::{GameData, SpriteColor, SpriteData};
 use nom_game::components::{Name, Position, Tile};
 
-use crate::{GraphicsState, GraphicsBackend, SpriteColor};
+use crate::{GraphicsState, GraphicsBackend};
 use crate::globals::{TILE_SIZE, TILE_Z, MOVEMENT_SPEED};
 use super::{move_towards, tile_to_world};
 
@@ -47,27 +48,23 @@ pub fn get_sprite_renderer(
 
     let name = world.get_component::<Name>(entity).unwrap();
     let position = world.get_component::<Position>(entity).unwrap();
+    let data = get_sprite_data(&name.0, world);
 
     if world.get_component::<Tile>(entity).is_some() {
         z_index = TILE_Z
     }
 
-    let index = match name.0.as_str() {
-        "Player" => 1,
-        "Tile" => 177,
-        _ => 0
-    };
-    let color = match name.0.as_str() {
-        "Player" => SpriteColor(255, 255, 255, 255),
-        "Tile" => SpriteColor(50, 200, 100, 255),
-        _ => SpriteColor(0, 0, 0, 0) 
-    };
     SpriteRenderer { 
         entity: entity,
         v: tile_to_world(position.0),
-        atlas_name: "ascii".into(),
-        index,
+        atlas_name: data.atlas_name,
+        index: data.index,
         z_index,
-        color
+        color: data.color
     }
+}
+
+fn get_sprite_data(name: &str, world: &World) -> SpriteData {
+    let game_data = world.get_resource::<GameData>().expect("Invalid game data resource!");
+    game_data.entities.get(name).expect(&format!("No sprite data for {}", name)).sprite.clone()
 }

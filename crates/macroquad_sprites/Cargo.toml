@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 macroquad = "0.3" 
 
+nom_data = { path = "../nom_data" }
 nom_graphics = { path = "../nom_graphics" }
 rogalik = { path = "../../../rogalik" }

@@ -1,0 +1,7 @@
+Player:
+  sprite:
+    atlas_name: ascii
+    index: 1
+    color: [255, 255, 255, 255]
+  components:
+    Player:

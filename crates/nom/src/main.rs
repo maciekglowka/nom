@@ -14,6 +14,14 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
+    let tile_data_str = load_string("assets/data/tiles.yaml").await.expect("Could not load tile data!");
+    let player_data_str = load_string("assets/data/player.yaml").await.expect("Could not load player data!");
+
+    let mut game_data = nom_data::GameData::new();
+    let _ = game_data.add_entities_from_str(player_data_str);
+    let tiles = game_data.add_entities_from_str(tile_data_str);
+    game_data.tiles = tiles;
+
     let mut backend = macroquad_sprites::MacroquadBackend::new();
 
     backend.load_atlas(
@@ -32,6 +40,8 @@ async fn main() {
     };
 
     let mut world = rogalik::storage::World::new();
+    world.insert_resource(game_data);
+
     let mut graphics_state = nom_graphics::GraphicsState::new(
         &mut world
     );

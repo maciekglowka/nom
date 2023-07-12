@@ -4,6 +4,8 @@ use rogalik::{
     storage::{World, WorldEvent}
 };
 
+use nom_data::SpriteColor;
+
 pub mod globals;
 pub mod graphics;
 
@@ -50,6 +52,3 @@ pub trait GraphicsBackend {
     );
     fn viewport_size(&self) -> Vector2F;
 }
-
-#[derive(Clone, Copy, Debug)]
-pub struct SpriteColor(pub u8, pub u8, pub u8, pub u8);

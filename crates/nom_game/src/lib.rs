@@ -1,6 +1,8 @@
 use rogalik::math::vectors::Vector2I;
 use rogalik::storage::World;
 
+use nom_data::GameData;
+
 pub mod actions;
 mod board;
 pub mod components;
@@ -16,12 +18,20 @@ pub fn init(world: &mut World) {
 
     world.insert_resource(actions::CurrentAction(None));
 
-    let player = world.spawn_entity();
-    let _ = world.insert_component(player, components::Player);
-    let _ = world.insert_component(player, components::Position(
+    // let player = world.spawn_entity();
+    // let _ = world.insert_component(player, components::Position(
+    //     Vector2I::new(globals::BOARD_WIDTH as i32 / 2, 0)
+    // ));
+    // let _ = world.insert_component(player, components::Name("Player".into()));
+    // let player_data = world.get_resource::<GameData>().unwrap()
+    //     .entities.get("Tile").unwrap().clone();
+    // components::insert_data_components(player, world, &player_data.components);
+
+    let _ = systems::spawn_with_position(
+        world,
+        "Player",
         Vector2I::new(globals::BOARD_WIDTH as i32 / 2, 0)
-    ));
-    let _ = world.insert_component(player, components::Name("Player".into()));
+    );
 }
 
 pub fn game_step(world: &mut World) {

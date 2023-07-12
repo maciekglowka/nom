@@ -39,7 +39,7 @@ impl Action for ShiftBoard {
             .iter()
             .map(|&e| e)
             .collect::<Vec<_>>();
-
+        
         for entity in to_remove {
             world.despawn_entity(entity);
         }

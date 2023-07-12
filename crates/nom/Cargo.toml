@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+nom_data = { path = "../nom_data" }
 nom_game = { path = "../nom_game" }
 nom_graphics = { path = "../nom_graphics" }
 macroquad_sprites = { path = "../macroquad_sprites" }

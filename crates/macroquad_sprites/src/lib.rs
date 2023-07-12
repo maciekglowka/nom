@@ -2,7 +2,8 @@ use macroquad::prelude::*;
 use rogalik::math::vectors::Vector2F;
 use std::collections::HashMap;
 
-use nom_graphics::{GraphicsBackend, SpriteColor};
+use nom_data::SpriteColor;
+use nom_graphics::GraphicsBackend;
 
 mod assets;
 mod errors;
