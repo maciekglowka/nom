@@ -72,7 +72,7 @@ impl MacroquadBackend {
             ..Default::default()
         };
         let macroquad_color = macroquad_color_from_sprite(color);
-        draw_texture_ex(atlas.tex, position.x, position.y, macroquad_color, params);
+        draw_texture_ex(&atlas.tex, position.x, position.y, macroquad_color, params);
     }
 }
 impl GraphicsBackend for MacroquadBackend {
@@ -115,7 +115,7 @@ impl GraphicsBackend for MacroquadBackend {
         let params = TextParams {
             font_size: font_size as u16,
             color: macroquad_color,
-            font: *font,
+            font: Some(font),
             ..Default::default()
         };
         draw_text_ex(text, position.x, position.y, params);

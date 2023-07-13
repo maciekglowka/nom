@@ -3,18 +3,20 @@ use rogalik::storage::{Entity, World};
 
 use nom_data::GameData;
 
-use crate::actions::{Action, CurrentAction};
+use crate::actions::{Action, ActionQueue};
 use crate::components::{Name, Position, insert_data_components};
 
 pub fn execute_action(world: &mut World) {
     let Some(action) = get_current_action(world) else { return };
     let next = action.execute(world);
-    world.get_resource_mut::<CurrentAction>().unwrap().0 = next;
+    if let Some(next) = next {
+        world.get_resource_mut::<ActionQueue>().unwrap().0.extend(next);
+    }
 }
 
 fn get_current_action(world: &mut World) -> Option<Box<dyn Action>> {
-    let mut current = world.get_resource_mut::<CurrentAction>()?;
-    current.0.take()
+    let mut queue = world.get_resource_mut::<ActionQueue>()?;
+    queue.0.pop_front()
 }
 
 pub fn spawn_with_position(

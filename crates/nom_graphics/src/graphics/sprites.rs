@@ -4,10 +4,10 @@ use rogalik::{
 };
 
 use nom_data::{GameData, SpriteColor, SpriteData};
-use nom_game::components::{Name, Position, Tile};
+use nom_game::components::{Name, Player, Position, Tile};
 
 use crate::{GraphicsState, GraphicsBackend};
-use crate::globals::{TILE_SIZE, TILE_Z, MOVEMENT_SPEED};
+use crate::globals::{TILE_SIZE, TILE_Z, MOVEMENT_SPEED, PLAYER_Z};
 use super::{move_towards, tile_to_world};
 
 pub struct SpriteRenderer {
@@ -52,6 +52,9 @@ pub fn get_sprite_renderer(
 
     if world.get_component::<Tile>(entity).is_some() {
         z_index = TILE_Z
+    }
+    if world.get_component::<Player>(entity).is_some() {
+        z_index = PLAYER_Z
     }
 
     SpriteRenderer { 

@@ -8,6 +8,7 @@ use nom_data::SpriteColor;
 
 pub mod globals;
 pub mod graphics;
+pub mod ui;
 
 pub struct GraphicsState {
     sprites: Vec<graphics::sprites::SpriteRenderer>,

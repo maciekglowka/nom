@@ -33,9 +33,11 @@ async fn main() {
     ).await
     .expect("Could not load sprites!");
 
+    backend.load_font("default",  "assets/ui/04B_03.ttf").await
+        .expect("Could not find fonts!");
+
     let mut main_camera = Camera2D {
-        zoom: Vec2::new(2. / screen_width(), -2. / screen_height()),
-        target: 0.5 * nom_graphics::globals::TILE_SIZE * Vec2::splat(8.),
+        zoom: Vec2::new(2. / screen_width(), 2. / screen_height()),
         ..Default::default()
     };
 
@@ -56,6 +58,8 @@ async fn main() {
         backend.set_bounds(&main_camera);
         nom_graphics::graphics::update(&world, &mut graphics_state, &backend);
         input::set_input_action(&main_camera, &mut world);
+        set_default_camera();
+        nom_graphics::ui::ui_update(&world, &backend);
         next_frame().await;
 
         // temp to save some cpu cycles
@@ -79,5 +83,4 @@ fn update_camera(
         2.
     );
     camera.target = Vec2::new(v.x, v.y);
-
 }
