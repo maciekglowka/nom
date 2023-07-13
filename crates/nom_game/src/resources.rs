@@ -1,10 +1,11 @@
 use rogalik::storage::World;
+use serde::Deserialize;
 use std::{
     collections::HashMap,
     fmt
 };
 
-#[derive(Clone, Copy, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Eq, PartialEq, Hash, Deserialize)]
 pub enum Resource {
     Food,
     Energy
@@ -20,21 +21,15 @@ impl fmt::Display for Resource {
 }
 
 pub struct PlayerResources {
-    pub stock: HashMap<Resource, u32>
+    pub stock: HashMap<Resource, i32>
 }
 impl PlayerResources {
     pub fn new() -> Self {
         PlayerResources { stock: HashMap::new() }
     }
-    pub fn add(&mut self, value: HashMap<Resource, u32>) {
+    pub fn change_stock_by(&mut self, value: &HashMap<Resource, i32>) {
         for (k, v) in value.iter() {
             *self.stock.entry(*k).or_insert(0) += v;
-        }
-    }
-    pub fn remove(&mut self, value: HashMap<Resource, u32>) {
-        for (k, v) in value.iter() {
-            let item = self.stock.entry(*k).or_insert(0);
-            *item = item.saturating_sub(*v);
         }
     }
 }

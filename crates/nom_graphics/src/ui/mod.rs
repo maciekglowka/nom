@@ -2,7 +2,7 @@ use rogalik::math::vectors::Vector2F;
 use rogalik::storage::World;
 
 use nom_data::SpriteColor;
-use nom_game::{PlayerResources, Resource};
+use nom_game::PlayerResources;
 
 use super::GraphicsBackend;
 

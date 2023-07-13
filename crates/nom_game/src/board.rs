@@ -1,5 +1,6 @@
 use rogalik::math::vectors::Vector2I;
 use rogalik::storage::{Entity, World};
+use rand::prelude::*;
 use std::collections::VecDeque;
 
 use crate::globals::{BOARD_WIDTH, BOARD_LENGTH};
@@ -22,6 +23,8 @@ pub fn init_board(world: &mut World) {
 }
 
 pub fn spawn_row(world: &mut World) {
+    let mut rng = thread_rng();
+
     let shift = match world.get_resource::<Board>() {
         Some(b) => b.shift,
         _ => return
@@ -30,7 +33,13 @@ pub fn spawn_row(world: &mut World) {
     for x in 0..BOARD_WIDTH {
         let v = Vector2I::new(x as i32, shift as i32);
 
-        let Some(entity) = spawn_with_position(world, "Plains", v) else { continue };
+        let kind = match rng.gen_range(0.0..1.0) {
+            a if a < 0.5 => "Plains",
+            a if a < 0.75 => "Forest",
+            _ => "Fields"
+        };
+
+        let Some(entity) = spawn_with_position(world, kind, v) else { continue };
         row.push(entity);
     }
     if let Some(mut board) = world.get_resource_mut::<Board>() {

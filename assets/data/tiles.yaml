@@ -1,7 +1,25 @@
-Plains:
+Fields:
+  sprite:
+    atlas_name: ascii
+    index: 177
+    color: [200, 200, 100, 255]
+  components:
+    Resources: 
+      Food: 8
+    Tile:
+Forest:
   sprite:
     atlas_name: ascii
     index: 177
     color: [50, 200, 100, 255]
+  components:
+    Resources: 
+      Energy: 7
+    Tile:
+Plains:
+  sprite:
+    atlas_name: ascii
+    index: 177
+    color: [50, 100, 100, 255]
   components:
     Tile:

@@ -20,7 +20,7 @@ pub fn init(world: &mut World) {
     world.insert_resource(actions::ActionQueue(VecDeque::new()));
 
     let mut resources = resources::PlayerResources::new();
-    resources.add(HashMap::from_iter([
+    resources.change_stock_by(&HashMap::from_iter([
         (resources::Resource::Food, 50),
         (resources::Resource::Energy, 20),
     ]));
