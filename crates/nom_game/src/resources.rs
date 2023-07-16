@@ -21,15 +21,26 @@ impl fmt::Display for Resource {
 }
 
 pub struct PlayerResources {
-    pub stock: HashMap<Resource, i32>
+    pub stock: HashMap<Resource, i32>,
+    pub travel_cost: HashMap<Resource, i32>
 }
 impl PlayerResources {
     pub fn new() -> Self {
-        PlayerResources { stock: HashMap::new() }
+        PlayerResources { 
+            stock: HashMap::new(),
+            travel_cost: HashMap::from_iter([
+                (Resource::Food, 5), (Resource::Energy, 3)
+            ])
+        }
     }
-    pub fn change_stock_by(&mut self, value: &HashMap<Resource, i32>) {
+    pub fn add_resources(&mut self, value: &HashMap<Resource, i32>) {
         for (k, v) in value.iter() {
             *self.stock.entry(*k).or_insert(0) += v;
+        }
+    }
+    pub fn remove_resources(&mut self, value: &HashMap<Resource, i32>) {
+        for (k, v) in value.iter() {
+            *self.stock.entry(*k).or_insert(0) -= v;
         }
     }
 }

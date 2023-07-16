@@ -4,7 +4,7 @@ Fields:
     index: 177
     color: [200, 200, 100, 255]
   components:
-    Resources: 
+    ResourceSupply: 
       Food: 8
     Tile:
 Forest:
@@ -13,7 +13,7 @@ Forest:
     index: 177
     color: [50, 200, 100, 255]
   components:
-    Resources: 
+    ResourceSupply: 
       Energy: 7
     Tile:
 Plains:

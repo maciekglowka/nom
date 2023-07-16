@@ -1,6 +1,5 @@
 use rogalik::math::vectors::Vector2I;
 use rogalik::storage::{Entity, World};
-use std::any::TypeId;
 
 use nom_data::GameData;
 
@@ -13,8 +12,8 @@ pub fn execute_action(world: &mut World, setup: &GameSetup) {
     let mut side_effects = Vec::new();
     let type_id = action.type_id();
     
-    for handler in setup.action_handlers.get(&type_id).iter().flat_map(|a| *a) {
-        let result = handler(world, action);
+    for modifier in setup.action_modifiers.get(&type_id).iter().flat_map(|a| *a) {
+        let result = modifier(world, action);
         if result.action.type_id() != type_id {
             // the action has changed it's type
             // start over and discard potential side-effects

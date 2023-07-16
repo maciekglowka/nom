@@ -19,8 +19,12 @@ pub struct Player;
 impl Component for Player {}
 
 #[derive(Deserialize)]
-pub struct Resources(pub HashMap<Resource, i32>);
-impl Component for Resources {}
+pub struct ResourceDemand(pub HashMap<Resource, i32>);
+impl Component for ResourceDemand {}
+
+#[derive(Deserialize)]
+pub struct ResourceSupply(pub HashMap<Resource, i32>);
+impl Component for ResourceSupply {}
 
 #[derive(Deserialize)]
 pub struct Tile;
@@ -36,7 +40,8 @@ pub fn insert_data_components(
         let Some(name) = name.as_str() else { continue };
         match name {
             "Player" => insert_single::<Player>(entity, world, component_data),
-            "Resources" => insert_single::<Resources>(entity, world, component_data),
+            "ResourceDemand" => insert_single::<ResourceDemand>(entity, world, component_data),
+            "ResourceSupply" => insert_single::<ResourceSupply>(entity, world, component_data),
             "Tile" => insert_single::<Tile>(entity, world, component_data),
             _ => continue
         };

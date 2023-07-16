@@ -6,7 +6,7 @@ use std::{
 };
 
 pub mod actions;
-mod action_handlers;
+mod action_modifiers;
 mod board;
 pub mod components;
 pub mod globals;
@@ -16,14 +16,14 @@ mod systems;
 pub use board::Board;
 pub use resources::{PlayerResources, Resource};
 
-use action_handlers::ActionHandler;
+use action_modifiers::ActionModifier;
 
 pub struct GameSetup {
-    pub action_handlers: HashMap<TypeId, Vec<ActionHandler>>
+    pub action_modifiers: HashMap<TypeId, Vec<ActionModifier>>
 }
 impl GameSetup {
     pub fn new() -> Self {
-        GameSetup { action_handlers: HashMap::new() }
+        GameSetup { action_modifiers: HashMap::new() }
     }
 }
 
@@ -35,7 +35,7 @@ pub fn init(world: &mut World) -> GameSetup {
     world.insert_resource(actions::ActionQueue(VecDeque::new()));
 
     let mut resources = resources::PlayerResources::new();
-    resources.change_stock_by(&HashMap::from_iter([
+    resources.add_resources(&HashMap::from_iter([
         (resources::Resource::Food, 50),
         (resources::Resource::Energy, 20),
     ]));
@@ -47,7 +47,7 @@ pub fn init(world: &mut World) -> GameSetup {
         Vector2I::new(globals::BOARD_WIDTH as i32 / 2, 0)
     );
     let mut setup = GameSetup::new();
-    register_action_handlers(&mut setup);
+    register_action_modifiers(&mut setup);
     setup
 }
 
@@ -55,7 +55,7 @@ pub fn game_step(world: &mut World, state: &GameSetup) {
     systems::execute_action(world, state);
 }
 
-fn register_action_handlers(setup: &mut GameSetup) {
+fn register_action_modifiers(setup: &mut GameSetup) {
     // setup.action_handlers.insert(
     //     TypeId::of::<actions::ShiftBoard>(),
     //     vec![action_handlers::dummy_shift_handler]
