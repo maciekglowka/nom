@@ -5,7 +5,7 @@ use std::{
     fmt
 };
 
-#[derive(Clone, Copy, Eq, PartialEq, Hash, Deserialize)]
+#[derive(Clone, Copy, Eq, PartialEq, Hash, Debug, Deserialize)]
 pub enum Resource {
     Food,
     Energy
@@ -29,7 +29,7 @@ impl PlayerResources {
         PlayerResources { 
             stock: HashMap::new(),
             travel_cost: HashMap::from_iter([
-                (Resource::Food, 5), (Resource::Energy, 3)
+                (Resource::Food, 4), (Resource::Energy, 2)
             ])
         }
     }

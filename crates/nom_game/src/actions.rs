@@ -49,7 +49,10 @@ pub struct EnterTile {
 }
 impl Action for EnterTile {
     fn execute(&self, world: &mut World) -> Option<Vec<Box<dyn Action>>> {
-        let entity = world.query::<Tile>().with::<Position>().iter().next()?.entity;
+        let entity = world.query::<Tile>().with::<Position>()
+            .iter()
+            .find(|a| a.get::<Position>().unwrap().0 == self.target)?
+            .entity;
         let mut result: Vec<Box<dyn Action>> = Vec::new();
         if let Some(supply) = world.get_component::<ResourceSupply>(entity) {
             result.push(
@@ -94,6 +97,7 @@ impl Action for CollectResources {
     fn execute(&self, world: &mut World) -> Option<Vec<Box<dyn Action>>> {
         let mut resources = world.get_resource_mut::<PlayerResources>()?;
         resources.add_resources(&self.value);
+        // println!("Collected: {:?}", self.value);
         None
     }
 }
