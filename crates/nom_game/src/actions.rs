@@ -1,6 +1,9 @@
 use rogalik::math::vectors::Vector2I;
 use rogalik::storage::World;
-use std::collections::{HashMap, VecDeque};
+use std::{
+    any::TypeId,
+    collections::{HashMap, VecDeque}
+};
 
 use crate::globals::BOARD_WIDTH;
 
@@ -12,6 +15,9 @@ pub struct ActionQueue(pub VecDeque<Box<dyn Action>>);
 
 pub trait Action {
     fn execute(&self, world: &mut World) -> Option<Vec<Box<dyn Action>>>;
+    fn type_id(&self) -> TypeId where Self: 'static {
+        TypeId::of::<Self>()
+    }
 }
 
 pub struct MovePlayer {
@@ -26,32 +32,24 @@ impl Action for MovePlayer {
                     if self.target.x < 0 || self.target.x >= BOARD_WIDTH as i32 { return None };
             
                     position.0 = self.target;
-                    return Some(vec![Box::new(ShiftBoard), Box::new(HandleResources)]);
+                    return Some(vec![
+                        Box::new(ShiftBoard),
+                        Box::new(TravelCost { resource_change: HashMap::from_iter([
+                                (Resource::Food, -5), (Resource::Energy, -3)
+                        ])})
+                    ]);
             }
         None
     }
 }
 
-pub struct HandleResources;
-impl Action for HandleResources {
+pub struct TravelCost {
+    pub resource_change: HashMap<Resource, i32>
+}
+impl Action for TravelCost {
     fn execute(&self, world: &mut World) -> Option<Vec<Box<dyn Action>>> {
         let mut resources = world.get_resource_mut::<PlayerResources>()?;
-
-        // base movement cost
-        resources.change_stock_by(&HashMap::from_iter([
-            (Resource::Food, -5), (Resource::Energy, -3)
-        ]));
-
-        // tile resources
-        let position = world.query::<Player>().with::<Position>()
-            .iter().next()?.get::<Position>()?.0;
-        let tile_query = world.query::<Tile>()
-            .with::<Position>()
-            .with::<Resources>();
-        let tile = tile_query.iter()
-            .find(|a| a.get::<Position>().unwrap().0 == position)?;
-        resources.change_stock_by(&tile.get::<Resources>()?.0);    
-            
+        resources.change_stock_by(&self.resource_change);
         None
     }
 }

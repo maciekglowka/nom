@@ -1,16 +1,36 @@
 use rogalik::math::vectors::Vector2I;
 use rogalik::storage::{Entity, World};
+use std::any::TypeId;
 
 use nom_data::GameData;
 
+use crate::GameSetup;
 use crate::actions::{Action, ActionQueue};
 use crate::components::{Name, Position, insert_data_components};
 
-pub fn execute_action(world: &mut World) {
-    let Some(action) = get_current_action(world) else { return };
+pub fn execute_action(world: &mut World, setup: &GameSetup) {
+    let Some(mut action) = get_current_action(world) else { return };
+    let mut side_effects = Vec::new();
+    let type_id = action.type_id();
+    
+    for handler in setup.action_handlers.get(&type_id).iter().flat_map(|a| *a) {
+        let result = handler(world, action);
+        if result.action.type_id() != type_id {
+            // the action has changed it's type
+            // start over and discard potential side-effects
+            world.get_resource_mut::<ActionQueue>().unwrap().0.push_front(result.action);
+            return;
+        }
+        action = result.action;
+        side_effects.extend(result.side_effects);
+    }
+
     let next = action.execute(world);
+    let queue = &mut world.get_resource_mut::<ActionQueue>().unwrap().0;
+    queue.extend(side_effects);
+    
     if let Some(next) = next {
-        world.get_resource_mut::<ActionQueue>().unwrap().0.extend(next);
+        queue.extend(next);
     }
 }
 

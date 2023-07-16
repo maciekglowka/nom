@@ -47,11 +47,11 @@ async fn main() {
     let mut graphics_state = nom_graphics::GraphicsState::new(
         &mut world
     );
-    nom_game::init(&mut world);
+    let game_setup = nom_game::init(&mut world);
 
     loop {
         let frame_start = Instant::now();
-        nom_game::game_step(&mut world);
+        nom_game::game_step(&mut world, &game_setup);
         clear_background(BLACK);
         update_camera(&mut main_camera, &world);
         set_camera(&main_camera);
