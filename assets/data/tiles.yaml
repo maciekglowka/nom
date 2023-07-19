@@ -14,7 +14,7 @@ Forest:
     color: [50, 200, 100, 255]
   components:
     ResourceSupply: 
-      Energy: 7
+      Energy: 5
     Tile:
 Plains:
   sprite:

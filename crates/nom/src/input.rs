@@ -2,8 +2,33 @@ use macroquad::prelude::*;
 use rogalik::math::vectors::{Vector2I, Vector2F};
 use rogalik::storage::World;
 
-use nom_game::actions::{ActionQueue, MovePlayer};
-use nom_graphics::graphics::world_to_tile;
+use nom_graphics::{
+    ui::{ButtonState, UiState}
+};
+
+pub fn get_ui_state(camera: &Camera2D) -> UiState {
+    // use event streams ?
+    let mut left = ButtonState::Up;
+    if is_mouse_button_down(MouseButton::Left) {
+        left = ButtonState::Down
+    }
+    if is_mouse_button_released(MouseButton::Left) {
+        left = ButtonState::Released
+    }
+    if is_mouse_button_pressed(MouseButton::Left) {
+        left = ButtonState::Pressed
+    }
+    UiState {
+        mouse_screen_position: get_mouse_screen_position(camera),
+        mouse_world_position: get_mouse_world_position(camera),
+        mouse_button_left: left
+    }
+}
+
+fn get_mouse_screen_position(camera: &Camera2D) -> Vector2F {
+    let v = mouse_position();
+    Vector2F::new(v.0, v.1)
+}
 
 fn get_mouse_world_position(camera: &Camera2D) -> Vector2F {
     let mouse = mouse_position();
@@ -11,13 +36,13 @@ fn get_mouse_world_position(camera: &Camera2D) -> Vector2F {
     Vector2F::new(v.x, v.y)
 }
 
-fn get_mouse_tile(camera: &Camera2D) -> Vector2I {
-    world_to_tile(get_mouse_world_position(camera))
-}
-
-pub fn set_input_action(camera: &Camera2D, world: &mut World) {
-    if is_mouse_button_released(MouseButton::Left) {
-        let Some(mut queue) = world.get_resource_mut::<ActionQueue>() else { return };
-        queue.0.push_back(Box::new(MovePlayer { target: get_mouse_tile(camera) }));
-    }
-}
+// pub fn set_input_action(camera: &Camera2D, manager: &mut GameManager) {
+//     if is_mouse_button_released(MouseButton::Left) {
+//         match manager.input_required {
+//             Some(InputRequired::Tile) => {
+//                 manager.current_input = Some(Input::Tile(get_mouse_tile(camera)))
+//             },
+//             _ => ()
+//         }
+//     }
+// }

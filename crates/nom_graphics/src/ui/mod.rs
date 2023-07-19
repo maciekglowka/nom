@@ -2,15 +2,35 @@ use rogalik::math::vectors::Vector2F;
 use rogalik::storage::World;
 
 use nom_data::SpriteColor;
-use nom_game::PlayerResources;
+use nom_game::{GameManager, PlayerResources};
 
 use super::GraphicsBackend;
 
+mod input;
+
+#[derive(Default)]
+pub struct UiState {
+    pub mouse_world_position: Vector2F,
+    pub mouse_screen_position: Vector2F,
+    pub mouse_button_left: ButtonState
+}
+
+#[derive(Default, PartialEq)]
+pub enum ButtonState {
+    #[default]
+    Up,
+    Down,
+    Pressed,
+    Released
+}
+
 pub fn ui_update(
-    world: &World,
-    backend: &dyn GraphicsBackend
+    world: &mut World,
+    backend: &dyn GraphicsBackend,
+    ui_state: &UiState,
 ) {
     draw_status(world, backend);
+    input::handle_input(world, ui_state);
 }
 
 fn draw_status(world: &World, backend: &dyn GraphicsBackend) {

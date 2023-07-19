@@ -10,6 +10,7 @@ mod action_modifiers;
 mod board;
 pub mod components;
 pub mod globals;
+pub mod input;
 mod resources;
 mod systems;
 
@@ -18,19 +19,17 @@ pub use resources::{PlayerResources, Resource};
 
 use action_modifiers::ActionModifier;
 
-pub struct GameSetup {
+#[derive(Default)]
+pub struct GameManager {
     pub action_modifiers: HashMap<TypeId, Vec<ActionModifier>>
 }
-impl GameSetup {
-    pub fn new() -> Self {
-        GameSetup { action_modifiers: HashMap::new() }
-    }
-}
 
-pub fn init(world: &mut World) -> GameSetup {
+pub fn init(world: &mut World) -> GameManager {
     let board = board::Board::new();
     world.insert_resource(board);
     board::init_board(world);
+
+    world.insert_resource(input::GameInput::default());
 
     world.insert_resource(actions::ActionQueue(VecDeque::new()));
 
@@ -46,18 +45,42 @@ pub fn init(world: &mut World) -> GameSetup {
         "Player",
         Vector2I::new(globals::BOARD_WIDTH as i32 / 2, 0)
     );
-    let mut setup = GameSetup::new();
-    register_action_modifiers(&mut setup);
-    setup
+    let mut manager = GameManager::default();
+    register_action_modifiers(&mut manager);
+    manager
 }
 
-pub fn game_step(world: &mut World, state: &GameSetup) {
-    systems::execute_action(world, state);
+pub fn game_step(world: &mut World, manager: &GameManager) {
+    if let Some(action) = systems::get_current_action(world) {
+        systems::execute_action(action, world, manager);
+        return;
+    }
+    if let Some(input) = input::get_current_input(world) {
+        input::handle_input(world, input);
+        return;
+    }
+    if let Some(mut game_input) = world.get_resource_mut::<input::GameInput>() {
+        // still waiting for input - return
+        if game_input.required.is_some() { return }
+        // otherwise if nothing to do and no input is required ask for tile movement
+        game_input.required = Some(input::InputRequired::Tile);
+    }
+
 }
 
-fn register_action_modifiers(setup: &mut GameSetup) {
-    // setup.action_handlers.insert(
-    //     TypeId::of::<actions::ShiftBoard>(),
-    //     vec![action_handlers::dummy_shift_handler]
-    // );
+fn register_action_modifiers(manager: &mut GameManager) {
+    manager.action_modifiers = HashMap::from_iter([
+        (
+            TypeId::of::<actions::MovePlayer>(), vec![
+                action_modifiers::movement_cost_modifier,
+                action_modifiers::shift_board_modifier,
+                action_modifiers::movement_enter_tile_modifier,
+            ]
+        ),
+        (
+            TypeId::of::<actions::EnterTile>(), vec![
+                action_modifiers::enter_tile_resources_modifier
+            ]
+        )
+    ]);
 }

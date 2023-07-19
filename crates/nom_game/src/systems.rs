@@ -3,16 +3,15 @@ use rogalik::storage::{Entity, World};
 
 use nom_data::GameData;
 
-use crate::GameSetup;
+use crate::GameManager;
 use crate::actions::{Action, ActionQueue};
 use crate::components::{Name, Position, insert_data_components};
 
-pub fn execute_action(world: &mut World, setup: &GameSetup) {
-    let Some(mut action) = get_current_action(world) else { return };
+pub fn execute_action(mut action: Box<dyn Action>, world: &mut World, manager: &GameManager) {
     let mut side_effects = Vec::new();
     let type_id = action.type_id();
     
-    for modifier in setup.action_modifiers.get(&type_id).iter().flat_map(|a| *a) {
+    for modifier in manager.action_modifiers.get(&type_id).iter().flat_map(|a| *a) {
         let result = modifier(world, action);
         if result.action.type_id() != type_id {
             // the action has changed it's type
@@ -24,16 +23,12 @@ pub fn execute_action(world: &mut World, setup: &GameSetup) {
         side_effects.extend(result.side_effects);
     }
 
-    let next = action.execute(world);
+    if action.execute(world).is_err() { return };
     let queue = &mut world.get_resource_mut::<ActionQueue>().unwrap().0;
     queue.extend(side_effects);
-    
-    if let Some(next) = next {
-        queue.extend(next);
-    }
 }
 
-fn get_current_action(world: &mut World) -> Option<Box<dyn Action>> {
+pub fn get_current_action(world: &mut World) -> Option<Box<dyn Action>> {
     let mut queue = world.get_resource_mut::<ActionQueue>()?;
     queue.0.pop_front()
 }

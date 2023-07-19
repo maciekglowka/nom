@@ -47,19 +47,23 @@ async fn main() {
     let mut graphics_state = nom_graphics::GraphicsState::new(
         &mut world
     );
-    let game_setup = nom_game::init(&mut world);
+    let manager = nom_game::init(&mut world);
 
     loop {
         let frame_start = Instant::now();
-        nom_game::game_step(&mut world, &game_setup);
+        nom_game::game_step(&mut world, &manager);
         clear_background(BLACK);
         update_camera(&mut main_camera, &world);
         set_camera(&main_camera);
         backend.set_bounds(&main_camera);
         nom_graphics::graphics::update(&world, &mut graphics_state, &backend);
-        input::set_input_action(&main_camera, &mut world);
+
         set_default_camera();
-        nom_graphics::ui::ui_update(&world, &backend);
+        nom_graphics::ui::ui_update(
+            &mut world,
+            &backend,
+            &input::get_ui_state(&main_camera)
+        );
         next_frame().await;
 
         // temp to save some cpu cycles
