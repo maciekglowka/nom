@@ -2,6 +2,8 @@ use rogalik::{
     math::vectors::Vector2I,
     storage::{Entity, World}
 };
+use rand::prelude::*;
+use std::collections::HashMap;
 
 use crate::actions::{
     Action, CollectResources, EmptyAction, EnterTile, MovePlayer, ShiftBoard, TravelCost, UseResources
@@ -9,6 +11,7 @@ use crate::actions::{
 use crate::components::{Chest, Player, ResourceDemand, ResourceSupply, Tile, Position};
 use crate::input::{GameInput, InputRequired};
 use crate::PlayerResources;
+use crate::resources::Resource;
 
 pub struct ActionModifierResult {
     pub action: Box<dyn Action>,
@@ -87,9 +90,18 @@ pub fn enter_tile_chest_modifier(world: &mut World, action: Box<dyn Action>) -> 
         return ActionModifierResult::new(action, side_effects)
     };
     if let Some(mut input) = world.get_resource_mut::<GameInput>() {
+        let mut rng = thread_rng();
+        let fv = rng.gen_range(5..=15);
+        let ev = rng.gen_range(5..=15);
         input.required = Some(InputRequired::Action(vec![
-            ("click me".into(), Some(Box::new(EmptyAction))),
-            ("empty".into(), Some(Box::new(EmptyAction))),
+            (format!("Food: +{fv}"), Some(Box::new(CollectResources { 
+                value: HashMap::from_iter([(Resource::Food, fv)]),
+                source: None
+            }))),
+            (format!("Energy: +{ev}"), Some(Box::new(CollectResources { 
+                value: HashMap::from_iter([(Resource::Energy, rng.gen_range(5..15))]),
+                source: None
+            }))),
         ]))
     };
     ActionModifierResult::new(action, Vec::new())

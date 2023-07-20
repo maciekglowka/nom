@@ -1,33 +1,61 @@
-Crate:
+Chest:
   sprite:
     atlas_name: ascii
-    index: 177
-    color: [50, 50, 50, 255]
+    index: 255
+    color: [150, 50, 50, 255]
   components:
     Chest:
     Tile:
+  min_distance: 12
+  spawn_chance: 1.
 Fields:
   sprite:
     atlas_name: ascii
-    index: 177
+    index: 240
     color: [200, 200, 100, 255]
   components:
     ResourceSupply: 
-      Food: 8
+      Food: 10
     Tile:
+  spawn_chance: 3.
 Forest:
   sprite:
     atlas_name: ascii
-    index: 177
+    index: 5
     color: [50, 200, 100, 255]
   components:
     ResourceSupply: 
-      Energy: 5
+      Energy: 8
     Tile:
+  spawn_chance: 3.
+Hills:
+  sprite:
+    atlas_name: ascii
+    index: 94
+    color: [50, 100, 100, 255]
+  components:
+    ResourceDemand:
+      Food: 5
+    Tile:
+  min_distance: 20
+  spawn_chance: 5.
+Mountains:
+  sprite:
+    atlas_name: ascii
+    index: 94
+    color: [255, 255, 255, 255]
+  components:
+    ResourceDemand:
+      Energy: 5
+      Food: 5
+    Tile:
+  min_distance: 40
+  spawn_chance: 5.
 Plains:
   sprite:
     atlas_name: ascii
-    index: 177
+    index: 249
     color: [50, 100, 100, 255]
   components:
     Tile:
+  spawn_chance: 5.

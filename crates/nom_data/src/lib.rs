@@ -33,6 +33,8 @@ impl GameData {
 #[derive(Clone, Deserialize)]
 pub struct EntityData {
     pub sprite: SpriteData,
+    pub spawn_chance: Option<f32>,
+    pub min_distance: Option<usize>,
     pub components: serde_yaml::Value
 }
 
