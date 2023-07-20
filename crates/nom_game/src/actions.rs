@@ -22,6 +22,12 @@ pub trait Action {
     }
 }
 
+pub struct EmptyAction;
+impl Action for EmptyAction {
+    fn as_any(&self) -> &dyn Any { self }
+    fn execute(&self, world: &mut World) -> Result<(), ()> { Ok(()) }
+}
+
 pub struct MovePlayer {
     pub target: Vector2I
 }

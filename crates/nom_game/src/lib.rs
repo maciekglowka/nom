@@ -79,7 +79,8 @@ fn register_action_modifiers(manager: &mut GameManager) {
         ),
         (
             TypeId::of::<actions::EnterTile>(), vec![
-                action_modifiers::enter_tile_resources_modifier
+                action_modifiers::enter_tile_resources_modifier,
+                action_modifiers::enter_tile_chest_modifier
             ]
         )
     ]);

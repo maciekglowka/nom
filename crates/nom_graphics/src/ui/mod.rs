@@ -7,6 +7,8 @@ use nom_game::{GameManager, PlayerResources};
 use super::GraphicsBackend;
 
 mod input;
+mod buttons;
+mod modal;
 
 #[derive(Default)]
 pub struct UiState {
@@ -30,7 +32,7 @@ pub fn ui_update(
     ui_state: &UiState,
 ) {
     draw_status(world, backend);
-    input::handle_input(world, ui_state);
+    input::handle_input(world, backend, ui_state);
 }
 
 fn draw_status(world: &World, backend: &dyn GraphicsBackend) {

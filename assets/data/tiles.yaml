@@ -1,3 +1,11 @@
+Crate:
+  sprite:
+    atlas_name: ascii
+    index: 177
+    color: [50, 50, 50, 255]
+  components:
+    Chest:
+    Tile:
 Fields:
   sprite:
     atlas_name: ascii

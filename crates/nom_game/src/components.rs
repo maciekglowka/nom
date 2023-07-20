@@ -11,6 +11,10 @@ pub struct Position(pub Vector2I);
 impl Component for Position {}
 
 // Deserialized components
+#[derive(Deserialize)]
+pub struct Chest;
+impl Component for Chest {}
+
 pub struct Name(pub String);
 impl Component for Name {}
 
@@ -39,6 +43,7 @@ pub fn insert_data_components(
     for (name, component_data) in data.iter() {
         let Some(name) = name.as_str() else { continue };
         match name {
+            "Chest" => insert_single::<Chest>(entity, world, component_data),
             "Player" => insert_single::<Player>(entity, world, component_data),
             "ResourceDemand" => insert_single::<ResourceDemand>(entity, world, component_data),
             "ResourceSupply" => insert_single::<ResourceSupply>(entity, world, component_data),

@@ -34,6 +34,7 @@ pub fn spawn_row(world: &mut World) {
         let v = Vector2I::new(x as i32, shift as i32);
 
         let kind = match rng.gen_range(0.0..1.0) {
+            a if a < 0.2 => "Crate",
             a if a < 0.5 => "Plains",
             a if a < 0.75 => "Forest",
             _ => "Fields"

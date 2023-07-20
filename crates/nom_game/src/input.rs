@@ -12,7 +12,7 @@ pub enum Input  {
 
 pub enum InputRequired {
     Tile,
-    Action(Vec<(String, Box<dyn Action>)>)
+    Action(Vec<(String, Option<Box<dyn Action>>)>)
 }
 
 #[derive(Default)]
@@ -38,6 +38,10 @@ pub fn handle_input(world: &mut World, input: Input) {
             let Some(mut queue) = world.get_resource_mut::<ActionQueue>() else { return };
             queue.0.push_back(Box::new(MovePlayer { target: v }));
         },
+        Input::Action(a) => {
+            let Some(mut queue) = world.get_resource_mut::<ActionQueue>() else { return };
+            queue.0.push_back(a);
+        }
         _ => panic!("Not implemented!")
     }
 }
