@@ -80,7 +80,7 @@ fn draw_status(world: &World, backend: &dyn GraphicsBackend) {
             .with_text_owned(format!("{}", v))
             .with_sprite_color(sprite.2)
             .draw(
-                Vector2F::new(10., 32. + i as f32 * 32.),
+                Vector2F::new(10., 40. + i as f32 * 32.),
                 backend
             );
     }

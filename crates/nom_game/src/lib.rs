@@ -58,33 +58,23 @@ pub fn game_step(world: &mut World, manager: &GameManager) {
     if let Some(action) = systems::get_current_action(world) {
         systems::execute_action(action, world, manager);
     }
-    // if let Some(input) = input::get_current_input(world) {
-    //     input::handle_input(world, input);
-    //     return;
-    // }
-    // if let Some(mut game_input) = world.get_resource_mut::<input::GameInput>() {
-    //     // still waiting for input - return
-    //     if game_input.required.is_some() { return }
-    //     // otherwise if nothing to do and no input is required ask for tile movement
-    //     game_input.required = Some(input::InputRequired::Tile);
-    // }
 
 }
 
 fn register_action_modifiers(manager: &mut GameManager) {
     manager.action_modifiers = HashMap::from_iter([
         (
-            TypeId::of::<actions::MovePlayer>(), vec![
+            TypeId::of::<actions::MovePlayer>(), [
                 action_modifiers::movement_cost_modifier,
                 action_modifiers::shift_board_modifier,
                 action_modifiers::movement_enter_tile_modifier,
-            ]
+            ].to_vec()
         ),
         (
-            TypeId::of::<actions::EnterTile>(), vec![
+            TypeId::of::<actions::EnterTile>(), [
                 action_modifiers::enter_tile_resources_modifier,
                 action_modifiers::enter_tile_chest_modifier
-            ]
+            ].to_vec()
         )
     ]);
 }

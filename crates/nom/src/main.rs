@@ -14,8 +14,9 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let tile_data_str = load_string("assets/data/tiles.yaml").await.expect("Could not load tile data!");
-    let player_data_str = load_string("assets/data/player.yaml").await.expect("Could not load player data!");
+    set_pc_assets_folder("assets");
+    let tile_data_str = load_string("data/tiles.yaml").await.expect("Could not load tile data!");
+    let player_data_str = load_string("data/player.yaml").await.expect("Could not load player data!");
 
     let mut game_data = nom_data::GameData::new();
     let _ = game_data.add_entities_from_str(player_data_str);
@@ -26,14 +27,14 @@ async fn main() {
 
     backend.load_atlas(
         "ascii",
-        "assets/sprites/ascii.png",
+        "sprites/ascii.png",
         16,
         16,
         None
     ).await
     .expect("Could not load sprites!");
 
-    backend.load_font("default",  "assets/ui/04B_03.ttf").await
+    backend.load_font("default",  "ui/04B_03.ttf").await
         .expect("Could not find fonts!");
 
     let mut main_camera = Camera2D {

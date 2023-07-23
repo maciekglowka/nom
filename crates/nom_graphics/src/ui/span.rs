@@ -18,7 +18,7 @@ pub struct Span<'a> {
 impl<'a> Span<'a> {
     pub fn new() -> Self {
         Span {
-            size: 24,
+            size: 32,
             sprite_color: SpriteColor(255, 255, 255, 255),
             text_color: SpriteColor(255, 255, 255, 255),
             items: Vec::new(),

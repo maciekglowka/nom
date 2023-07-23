@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 nom_data = { path = "../nom_data" }
 nom_game = { path = "../nom_game" }
-rogalik = { path = "../../../rogalik" }
+rogalik = { git = "https://github.com/maciekglowka/rogalik.git" }

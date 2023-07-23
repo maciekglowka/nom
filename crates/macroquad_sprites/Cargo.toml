@@ -10,4 +10,4 @@ macroquad = "0.4"
 
 nom_data = { path = "../nom_data" }
 nom_graphics = { path = "../nom_graphics" }
-rogalik = { path = "../../../rogalik" }
+rogalik = { git = "https://github.com/maciekglowka/rogalik.git" }
