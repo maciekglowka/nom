@@ -20,6 +20,7 @@ pub struct SpriteRenderer {
 }
 
 pub fn update_sprites(state: &mut GraphicsState, world: &World) {
+    // TODO use delta time here or smth
     for sprite in state.sprites.iter_mut() {
         let entity = sprite.entity;
         let Some(target) = world.get_component::<Position>(entity) else { continue };

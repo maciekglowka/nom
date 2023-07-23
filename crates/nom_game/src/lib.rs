@@ -1,5 +1,7 @@
-use rogalik::math::vectors::Vector2I;
-use rogalik::storage::World;
+use rogalik::{
+    math::vectors::Vector2I,
+    storage::World
+};
 use std::{
     any::TypeId,
     collections::{HashMap, VecDeque}
@@ -9,8 +11,8 @@ pub mod actions;
 mod action_modifiers;
 mod board;
 pub mod components;
+pub mod events;
 pub mod globals;
-pub mod input;
 mod resources;
 mod systems;
 
@@ -29,7 +31,9 @@ pub fn init(world: &mut World) -> GameManager {
     world.insert_resource(board);
     board::init_board(world);
 
-    world.insert_resource(input::GameInput::default());
+    world.insert_resource(events::Events::new());
+
+    // world.insert_resource(input::GameInput::default());
 
     world.insert_resource(actions::ActionQueue(VecDeque::new()));
 
@@ -53,18 +57,17 @@ pub fn init(world: &mut World) -> GameManager {
 pub fn game_step(world: &mut World, manager: &GameManager) {
     if let Some(action) = systems::get_current_action(world) {
         systems::execute_action(action, world, manager);
-        return;
     }
-    if let Some(input) = input::get_current_input(world) {
-        input::handle_input(world, input);
-        return;
-    }
-    if let Some(mut game_input) = world.get_resource_mut::<input::GameInput>() {
-        // still waiting for input - return
-        if game_input.required.is_some() { return }
-        // otherwise if nothing to do and no input is required ask for tile movement
-        game_input.required = Some(input::InputRequired::Tile);
-    }
+    // if let Some(input) = input::get_current_input(world) {
+    //     input::handle_input(world, input);
+    //     return;
+    // }
+    // if let Some(mut game_input) = world.get_resource_mut::<input::GameInput>() {
+    //     // still waiting for input - return
+    //     if game_input.required.is_some() { return }
+    //     // otherwise if nothing to do and no input is required ask for tile movement
+    //     game_input.required = Some(input::InputRequired::Tile);
+    // }
 
 }
 

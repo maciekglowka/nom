@@ -3,10 +3,10 @@ use rogalik::math::vectors::{Vector2I, Vector2F};
 use rogalik::storage::World;
 
 use nom_graphics::{
-    ui::{ButtonState, UiState}
+    ui::{ButtonState, InputState}
 };
 
-pub fn get_ui_state(camera: &Camera2D) -> UiState {
+pub fn get_ui_state(camera: &Camera2D) -> InputState {
     // use event streams ?
     let mut left = ButtonState::Up;
     if is_mouse_button_down(MouseButton::Left) {
@@ -18,7 +18,7 @@ pub fn get_ui_state(camera: &Camera2D) -> UiState {
     if is_mouse_button_pressed(MouseButton::Left) {
         left = ButtonState::Pressed
     }
-    UiState {
+    InputState {
         mouse_screen_position: get_mouse_screen_position(camera),
         mouse_world_position: get_mouse_world_position(camera),
         mouse_button_left: left

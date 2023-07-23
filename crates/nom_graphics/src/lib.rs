@@ -52,4 +52,10 @@ pub trait GraphicsBackend {
         color: SpriteColor
     );
     fn viewport_size(&self) -> Vector2F;
+    fn text_size(
+        &self,
+        font_name: &str,
+        text: &str,
+        font_size: u32
+    ) -> Vector2F;
 }

@@ -48,6 +48,7 @@ async fn main() {
         &mut world
     );
     let manager = nom_game::init(&mut world);
+    let mut ui_state = nom_graphics::ui::UiState::new(&mut world);
 
     loop {
         let frame_start = Instant::now();
@@ -62,6 +63,7 @@ async fn main() {
         nom_graphics::ui::ui_update(
             &mut world,
             &backend,
+            &mut ui_state,
             &input::get_ui_state(&main_camera)
         );
         next_frame().await;

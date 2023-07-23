@@ -12,7 +12,11 @@ impl Component for Position {}
 
 // Deserialized components
 #[derive(Deserialize)]
-pub struct Chest;
+pub struct Chest {
+    // this should get randomized during the gam only
+    #[serde(default)]
+    pub options: Vec<(Resource, i32)>
+}
 impl Component for Chest {}
 
 pub struct Name(pub String);

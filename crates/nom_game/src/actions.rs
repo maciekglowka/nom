@@ -8,8 +8,8 @@ use std::{
 use crate::globals::BOARD_WIDTH;
 
 use super::board::{Board, spawn_row};
-use super::components::{Player, Position, Tile, ResourceSupply, ResourceDemand};
-use super::input::{Input, InputRequired};
+use super::components::{Player, Position};
+use super::events;
 use super::resources::{PlayerResources, Resource};
 
 pub struct ActionQueue(pub VecDeque<Box<dyn Action>>);
@@ -65,6 +65,7 @@ impl Action for TravelCost {
     fn execute(&self, world: &mut World) -> Result<(), ()> {
         let mut resources = world.get_resource_mut::<PlayerResources>().ok_or(())?;
         resources.remove_resources(&self.value);
+        send_resource_events(world, &self.value, true);
         Ok(())
     }
 }
@@ -78,6 +79,7 @@ impl Action for CollectResources {
     fn execute(&self, world: &mut World) -> Result<(), ()> {
         let mut resources = world.get_resource_mut::<PlayerResources>().ok_or(())?;
         resources.add_resources(&self.value);
+        send_resource_events(world, &self.value, false);
         Ok(())
     }
 }
@@ -91,7 +93,17 @@ impl Action for UseResources {
     fn execute(&self, world: &mut World) -> Result<(), ()> {
         let mut resources = world.get_resource_mut::<PlayerResources>().ok_or(())?;
         resources.remove_resources(&self.value);
+        send_resource_events(world, &self.value, true);
         Ok(())
+    }
+}
+
+fn send_resource_events(world: &World, value: &HashMap<Resource, i32>, negative: bool) {
+    let m = if negative { -1 } else { 1 };
+    if let Some(mut ev) = world.get_resource_mut::<events::Events>() {
+        for (k, v) in value.iter() {
+            ev.resource_change.publish(events::ResourceChangeEvent(*k, m * v));
+        } 
     }
 }
 

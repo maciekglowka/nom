@@ -1,15 +1,14 @@
 use rogalik::math::vectors::Vector2F;
 
-use super::{GraphicsBackend, ButtonState, UiState, SpriteColor};
+use super::{GraphicsBackend, ButtonState, InputState, SpriteColor};
+use super::span::Span;
 
 pub struct Button<'a> {
     origin: Vector2F,
     w: f32,
     h: f32,
     color: SpriteColor,
-    text: &'a str,
-    text_size: u32,
-    text_color: SpriteColor
+    span: Option<&'a Span<'a>>
 }
 impl<'a> Button<'a> {
     pub fn new(x: f32, y: f32, w: f32, h: f32) -> Self {
@@ -18,27 +17,21 @@ impl<'a> Button<'a> {
             w,
             h,
             color: SpriteColor(255, 255, 255, 255),
-            text: "",
-            text_size: 0,
-            text_color: SpriteColor(255, 255, 255, 255)
+            span: None
         }
     }
-    pub fn with_text(
-        &mut self,
-        text: &'a str,
-        color: SpriteColor,
-        size: u32
-    ) -> &mut Self {
-        self.text = text;
-        self.text_color = color;
-        self.text_size = size;
+    pub fn with_span(
+        mut self,
+        span: &'a Span
+    ) -> Self {
+        self.span = Some(span);
         self
     }
-    pub fn with_color(&mut self, color: SpriteColor) -> &mut Self {
+    pub fn with_color(mut self, color: SpriteColor) -> Self {
         self.color = color;
         self
     }
-    pub fn draw(&mut self, backend: &dyn GraphicsBackend) -> &mut Self{
+    pub fn draw(&self, backend: &dyn GraphicsBackend) {
         backend.draw_ui_sprite(
             "ascii",
             219,
@@ -46,17 +39,15 @@ impl<'a> Button<'a> {
             Vector2F::new(self.w, self.h),
             self.color
         );
-        let text_offset_y = (self.h - self.text_size as f32) / 2.;
-        backend.draw_ui_text(
-            "default",
-            self.text,
-            self.origin + Vector2F::new(text_offset_y, self.h - text_offset_y),
-            self.text_size,
-            self.text_color
-        );
-        self
+        if let Some(span) = self.span {
+            let span_offset = Vector2F::new(
+                8.,
+                self.h - 8.
+            );
+            span.draw(self.origin + span_offset, backend);
+        }
     }
-    pub fn clicked(&self, state: &UiState) -> bool {
+    pub fn clicked(&self, state: &InputState) -> bool {
         if let ButtonState::Released = state.mouse_button_left { 
             let v = state.mouse_screen_position;
             return v.x >= self.origin.x && v.y >= self.origin.y &&
